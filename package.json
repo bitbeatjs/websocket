@@ -1,12 +1,17 @@
 {
   "name": "@bitbeat/websocket",
   "version": "0.0.1",
-  "description": "",
+  "description": "The web socket server module for bitbeat.",
   "main": "index.js",
   "private": false,
   "typings": "./index.d.ts",
+  "repository": "bitbeatjs/websocket",
+  "bugs": {
+    "url": "https://github.com/bitbeatjs/websocket/issues"
+  },
+  "homepage": "https://github.com/bitbeatjs/websocket",
   "scripts": {
-    "start": "node ./node_modules/@bitbeat/core/bin/index.js start",
+    "start": "node ./node_modules/@bitbeat/core start",
     "build": "npx gulp default",
     "watch": "npx gulp watch",
     "lint": "eslint .",
@@ -14,16 +19,6 @@
     "analyse:licenses": "yarn licenses list",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "repository": {
-    "type": "git",
-    "url": "git+ssh://git@gitlab.com/QuadroKnoX/bitstorm-websocket.git"
-  },
-  "author": "Oliver Freudrich <info@oliverfreudrich.com> (https://oliverfreudrich.com)",
-  "license": "MIT",
-  "bugs": {
-    "url": "https://gitlab.com/QuadroKnoX/bitstorm-websocket/issues"
-  },
-  "homepage": "https://gitlab.com/QuadroKnoX/bitstorm-websocket#readme",
   "dependencies": {
     "debug": "^4.1.1",
     "promise-parallel-throttle": "^3.3.0",
