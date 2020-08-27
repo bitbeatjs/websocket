@@ -6,7 +6,7 @@ import {
     ConnectionMiddleware,
     Result, RunParameters,
 } from '@bitbeat/core';
-import { ServerOptions, Server as WsServer } from 'ws';
+import { ServerOptions, Server as WsServer, AddressInfo } from 'ws';
 import WebSocketServerConfig from '../config/webSocketServerConfig';
 import * as Throttle from 'promise-parallel-throttle';
 import WebSocketConnection from '../webSocketConnection';
@@ -188,8 +188,9 @@ export default class WebSocketServer extends Server {
             });
         });
         const options: ServerOptions = this.runtime.options as ServerOptions;
+        const address: AddressInfo | null = this.runtime.address() as AddressInfo;
         logger.info(
-            `Websocket server listening at ws://${options?.host}:${options?.port}`
+            `Websocket server listening at ws://${address && address.address ? address.address : options?.host}:${address && address.port ? address.port : options?.port}`
         );
 
         this.on('message', async ({ conn, type, data }) => {
