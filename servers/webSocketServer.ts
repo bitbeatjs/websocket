@@ -4,7 +4,10 @@ import {
     getInstancesOfType,
     Server,
     ConnectionMiddleware,
-    Result, RunParameters,
+    Result,
+    RunParameters,
+    boot,
+    Boot,
 } from '@bitbeat/core';
 import { ServerOptions, Server as WsServer, AddressInfo } from 'ws';
 import WebSocketServerConfig from '../config/webSocketServerConfig';
@@ -35,14 +38,11 @@ export default class WebSocketServer extends Server {
     }
 
     async configure(): Promise<void> {
-        this.debug = debug(`bitstorm:${this.name}`);
+        this.debug = debug(`${boot.name}:${this.name}`);
         debug.disable();
 
-        if (
-            process.env.BITSTORM_DEBUG === 'true' ||
-            process.env.BITSTORM_DEBUG === '1'
-        ) {
-            debug.enable('bitstorm:*');
+        if (Boot.getEnvVar('DEBUG', true)) {
+            debug.enable(`${boot.name}:*`);
         }
     }
 
