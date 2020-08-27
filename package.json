@@ -54,8 +54,5 @@
   },
   "lint-staged": {
     "*.{js,ts,css,md}": "prettier --write"
-  },
-  "publishConfig": {
-    "registry": "https://registry.npm.oliverfreudrich.com/"
   }
 }
