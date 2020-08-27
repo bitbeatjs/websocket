@@ -41,7 +41,7 @@ export default class WebSocketServer extends Server {
         this.debug = debug(`${boot.name}:${this.name}`);
         debug.disable();
 
-        if (Boot.getEnvVar('DEBUG', true)) {
+        if (Boot.getEnvVar('BITBEAT_DEBUG', true)) {
             debug.enable(`${boot.name}:*`);
         }
     }
