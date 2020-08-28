@@ -7,7 +7,6 @@ import {
     Result,
     RunParameters,
     boot,
-    Boot,
 } from '@bitbeat/core';
 import { ServerOptions, Server as WsServer, AddressInfo } from 'ws';
 import WebSocketServerConfig from '../config/webSocketServerConfig';
@@ -15,7 +14,7 @@ import * as Throttle from 'promise-parallel-throttle';
 import WebSocketConnection from '../webSocketConnection';
 import { randomBytes } from 'crypto';
 import { WebSocketAction } from '../index';
-import { Debugger, debug } from 'debug';
+import { Debugger } from 'debug';
 
 enum Types {
     Ping = 'ping',
@@ -38,12 +37,7 @@ export default class WebSocketServer extends Server {
     }
 
     async configure(): Promise<void> {
-        this.debug = debug(`${boot.name}:${this.name}`);
-        debug.disable();
-
-        if (Boot.getEnvVar('BITBEAT_DEBUG', true)) {
-            debug.enable(`${boot.name}:*`);
-        }
+        this.debug = boot.generateDebugger(this.name);
     }
 
     public generateNonce(): string {
@@ -187,6 +181,7 @@ export default class WebSocketServer extends Server {
                 ws.close(code, reason);
             });
         });
+        this.debug(`${this.name} started.`);
         const options: ServerOptions = this.runtime.options as ServerOptions;
         const address: AddressInfo | null = this.runtime.address() as AddressInfo;
         logger.info(
@@ -290,6 +285,7 @@ export default class WebSocketServer extends Server {
                 });
             }
         });
+        return super.start();
     }
 
     async stop(): Promise<void> {
@@ -304,5 +300,6 @@ export default class WebSocketServer extends Server {
         this.runtime?.close();
         this.debug(`${this.name} stopped.`);
         logger.info(`${this.name} stopped.`);
+        return super.stop();
     }
 }
