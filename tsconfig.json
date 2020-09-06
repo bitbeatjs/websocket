@@ -4,7 +4,10 @@
     "downlevelIteration": true
   },
   "files": [
-    "index.ts"
+    "index.ts",
+    "webSocketActionMiddleware.ts",
+    "webSocketAction.ts",
+    "webSocketConnection.ts"
   ],
   "include": [
     "config",

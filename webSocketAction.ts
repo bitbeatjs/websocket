@@ -2,7 +2,7 @@ import { Action, Result } from '@bitbeat/core';
 import WebSocketConnection from './webSocketConnection';
 
 export default class WebSocketAction extends Action {
-    strict: boolean = false;
+    strict = false;
 
     constructor() {
         super();

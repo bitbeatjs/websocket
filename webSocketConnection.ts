@@ -10,7 +10,7 @@ export default class WebSocketConnection extends Connection {
     constructor(
         server: Server,
         socket: Socket,
-        secure: boolean = false,
+        secure = false,
         recycleFunction: () => Promise<void>
     ) {
         super(server, socket, secure, recycleFunction);
