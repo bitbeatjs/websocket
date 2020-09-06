@@ -95,6 +95,7 @@ export default class WebSocketServer extends Server {
                         this.debug(`Sending ping to client '${conn.id}'.`);
                         await this.send(conn, {
                             type: Types.Ping,
+                            nonce: this.generateNonce(),
                         });
                         conn.validateTimeout = setTimeout(async () => {
                             this.debug(
@@ -151,11 +152,21 @@ export default class WebSocketServer extends Server {
                 )
             );
 
-            ws.on('error', (error) => {});
-            ws.on('upgrade', (res) => {});
-            ws.on('unexpected-response', (req, res) => {});
-            ws.on('ping', (message) => {});
-            ws.on('pong', (message) => {});
+            ws.on('error', (error) => {
+                this.emit('message', {
+                    conn,
+                    nonce: this.generateNonce(),
+                    type: Types.Response,
+                    error,
+                });
+            });
+            ws.on('pong', () => {
+                this.emit('message', {
+                    conn,
+                    nonce: this.generateNonce(),
+                    type: Types.Pong,
+                });
+            });
             ws.on('message', async (message) => {
                 let msg: any = message.toString('utf-8');
 
