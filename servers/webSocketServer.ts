@@ -192,6 +192,7 @@ export default class WebSocketServer extends Server {
         this.on('message', async ({ conn, type, data }) => {
             try {
                 let name: string, params: RunParameters['params'], action: WebSocketAction, res: Result, result: Result | any;
+                let middlewares;
                 switch (type.toLowerCase()) {
                     case Types.Action:
                         this.debug(`Got action request from '${conn.id}'.`);
@@ -211,7 +212,7 @@ export default class WebSocketServer extends Server {
                         }
 
                         res = new Result();
-                        const middlewares = boot.getMiddlewaresOfInstance(
+                        middlewares = boot.getMiddlewaresOfInstance(
                             action,
                             store,
                         );
