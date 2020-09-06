@@ -1,5 +1,6 @@
 import { ActionMiddleware } from '@bitbeat/core';
 import WebSocketAction from './webSocketAction';
+import WebSocketConnection from './webSocketConnection';
 
 export default class WebSocketActionMiddleware extends ActionMiddleware {
     constructor() {
@@ -12,8 +13,7 @@ export default class WebSocketActionMiddleware extends ActionMiddleware {
         action: WebSocketAction;
         result: any;
         raw: {
-            request: any;
-            response: any;
+            conn: WebSocketConnection;
         };
     }): Promise<void> {}
     /**
@@ -23,8 +23,7 @@ export default class WebSocketActionMiddleware extends ActionMiddleware {
         action: WebSocketAction;
         result: any;
         raw: {
-            request: any;
-            response: any;
+            conn: WebSocketConnection;
         };
     }): Promise<void> {}
 }
