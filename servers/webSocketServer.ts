@@ -7,6 +7,7 @@ import {
     Result,
     RunParameters,
     boot,
+    store,
 } from '@bitbeat/core';
 import { ServerOptions, Server as WsServer, AddressInfo } from 'ws';
 import WebSocketServerConfig from '../config/webSocketServerConfig';
@@ -49,13 +50,13 @@ export default class WebSocketServer extends Server {
         nonce?: string;
         data?: any;
         error?: Error;
-    }): Promise<void> {
+    }, securedOnly = true): Promise<void> {
         await Throttle.all(
-            ([...this.connections] as WebSocketConnection[]).map(
-                (conn) => async () => {
+            ([...this.connections] as WebSocketConnection[])
+                .filter((conn) => (securedOnly && conn.secure) || !securedOnly)
+                .map((conn) => async () => {
                     await this.send(conn, message);
-                }
-            )
+                })
         );
     }
 
@@ -210,9 +211,13 @@ export default class WebSocketServer extends Server {
                         }
 
                         res = new Result();
+                        const middlewares = boot.getMiddlewaresOfInstance(
+                            action,
+                            store,
+                        );
                         await Throttle.all(
-                            [...action.middlewares].map(
-                                (middleware) => async () =>
+                            [...middlewares].map(
+                                (middleware: any) => async () =>
                                     middleware.beforeRun({
                                         action,
                                         result: res,
@@ -234,8 +239,8 @@ export default class WebSocketServer extends Server {
                                 },
                             })) || res;
                         await Throttle.all(
-                            [...action.middlewares].map(
-                                (middleware) => async () =>
+                            [...middlewares].map(
+                                (middleware: any) => async () =>
                                     middleware.afterRun({
                                         action,
                                         result: res,
