@@ -311,7 +311,11 @@ export default class WebSocketServer extends Server {
             ([...this.connections] as WebSocketConnection[]).map(
                 (conn) => async () => {
                     conn.ws?.close(1012, 'Server closed.');
+                    this.debug(`Send close event to '${conn.id}'.`);
+                    logger.info(`Send close event to '${conn.id}'.`);
                     await this.removeConnection(conn);
+                    this.debug(`Closed connection '${conn.id}'.`);
+                    logger.info(`Closed connection '${conn.id}'.`);
                 }
             )
         );
