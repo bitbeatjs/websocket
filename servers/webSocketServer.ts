@@ -64,7 +64,6 @@ export default class WebSocketServer extends Server {
         conn: WebSocketConnection,
         message: {
             type: Types;
-            nonce?: string;
             data?: any;
             error?: Error;
         }
@@ -72,6 +71,7 @@ export default class WebSocketServer extends Server {
         return new Promise((res, rej) => {
             conn.ws?.send(
                 JSON.stringify({
+                    nonce: this.generateNonce(),
                     ...message,
                     error: message.error?.toString(),
                 }),
@@ -95,7 +95,6 @@ export default class WebSocketServer extends Server {
                         this.debug(`Sending ping to client '${conn.id}'.`);
                         await this.send(conn, {
                             type: Types.Ping,
-                            nonce: this.generateNonce(),
                         });
                         conn.validateTimeout = setTimeout(async () => {
                             this.debug(
@@ -200,7 +199,7 @@ export default class WebSocketServer extends Server {
             `Websocket server listening at ws://${address && address.address ? address.address : options?.host}:${address && address.port ? address.port : options?.port}`
         );
 
-        this.on('message', async ({ conn, type, data }) => {
+        this.on('message', async ({ conn, type, data, nonce }) => {
             try {
                 let name: string, params: RunParameters['params'], action: WebSocketAction, res: Result, result: Result | any;
                 let middlewares;
@@ -216,7 +215,6 @@ export default class WebSocketServer extends Server {
                         if (!action) {
                             await this.send(conn, {
                                 type: Types.Response,
-                                nonce: this.generateNonce(),
                                 error: new Error('Action was not found.'),
                             });
                             return;
@@ -267,12 +265,18 @@ export default class WebSocketServer extends Server {
                         );
                         await this.send(conn, {
                             type: Types.Response,
-                            nonce: this.generateNonce(),
                             data: result,
                         });
                         this.debug(`Returned action result to '${conn.id}'.`);
                         break;
                     case Types.Pong:
+                        if (!nonce) {
+                            return this.send(conn, {
+                                type: Types.Response,
+                                error: new Error('No nonce found on ping response.'),
+                            });
+                        }
+
                         this.debug(`Got pong response from '${conn.id}'.`);
                         clearTimeout(conn.validateTimeout);
                         break;
@@ -280,7 +284,6 @@ export default class WebSocketServer extends Server {
                         this.debug(`Got subscribe request from '${conn.id}'.`);
                         await this.send(conn, {
                             type: Types.Response,
-                            nonce: this.generateNonce(),
                         });
                         break;
                     case Types.Unsubscribe:
@@ -289,7 +292,6 @@ export default class WebSocketServer extends Server {
                         );
                         await this.send(conn, {
                             type: Types.Response,
-                            nonce: this.generateNonce(),
                         });
                         break;
                     default:
@@ -298,7 +300,6 @@ export default class WebSocketServer extends Server {
                 await this.send(conn, {
                     type: Types.Response,
                     error: e,
-                    nonce: this.generateNonce(),
                 });
             }
         });
