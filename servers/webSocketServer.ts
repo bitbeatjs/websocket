@@ -122,7 +122,10 @@ export default class WebSocketServer extends Server {
                                     this
                                 );
                             }
-                        )
+                        ),
+                        {
+                            maxInProgress: 1,
+                        }
                     );
                     this.addConnection(conn);
                     this.debug(`Verified client with id '${conn.id}'.`);
@@ -145,7 +148,10 @@ export default class WebSocketServer extends Server {
                     (connectionMiddleware) => async () => {
                         await connectionMiddleware.afterCreate(conn, this);
                     }
-                )
+                ),
+                {
+                    maxInProgress: 1,
+                }
             );
 
             ws.on('error', (error) => {
@@ -314,7 +320,10 @@ export default class WebSocketServer extends Server {
                             (connectionMiddleware) => async () => {
                                 await connectionMiddleware.beforeDestroy(conn, this);
                             }
-                        )
+                        ),
+                        {
+                            maxInProgress: 1,
+                        }
                     );
                     conn.ws?.close(1012, 'Server closed.');
                     this.debug(`Send close event to '${conn.id}'.`);
@@ -327,7 +336,10 @@ export default class WebSocketServer extends Server {
                             (connectionMiddleware) => async () => {
                                 await connectionMiddleware.afterDestroy(conn, this);
                             }
-                        )
+                        ),
+                        {
+                            maxInProgress: 1,
+                        }
                     );
                 }
             )
