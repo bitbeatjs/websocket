@@ -6,8 +6,14 @@ const merge = require('merge-stream');
 const eslint = require('gulp-eslint');
 
 const tsProject = ts.createProject('tsconfig.json');
-const compileTypeScript = () => {
-  const tsResult = tsProject.src()
+const compileTypeScript = (onlyChanged = true) => {
+  let tsResult = tsProject.src();
+
+  if (onlyChanged) {
+    tsResult = tsResult.pipe(changedInPlace());
+  }
+
+  tsResult = tsResult
       .pipe(eslint())
       .pipe(eslint.format())
       .pipe(eslint.failAfterError())
@@ -25,9 +31,9 @@ const compileTypeScript = () => {
       .pipe(gulp.dest(__dirname));
 };
 
-gulp.task('default', compileTypeScript);
+gulp.task('default', () => compileTypeScript(false));
+gulp.task('changed', () => compileTypeScript());
 gulp.task('watch', async () => {
-  compileTypeScript();
   const files = await new Promise((res, rej) => {
     const stream = tsProject.src();
     const data = [];
@@ -43,5 +49,5 @@ gulp.task('watch', async () => {
     });
   });
 
-  gulp.watch(files, gulp.series('default'));
+  gulp.watch(files, gulp.series('changed'));
 });
