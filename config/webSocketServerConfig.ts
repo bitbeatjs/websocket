@@ -1,7 +1,15 @@
 import { Configuration } from '@bitbeat/core';
 
 export default class WebSocketServerConfig extends Configuration {
-    default: any = {
+    constructor() {
+        super();
+    }
+
+    default: {
+        host: string;
+        port: number;
+        [name: string]: any;
+    } = {
         host: 'localhost',
         port: 5000,
         perMessageDeflate: {
@@ -20,8 +28,4 @@ export default class WebSocketServerConfig extends Configuration {
             threshold: 1024,
         },
     };
-
-    constructor() {
-        super();
-    }
 }
