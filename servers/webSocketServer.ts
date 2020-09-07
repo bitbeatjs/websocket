@@ -13,6 +13,7 @@ import { ServerOptions, Server as WsServer, AddressInfo } from 'ws';
 import WebSocketServerConfig from '../config/webSocketServerConfig';
 import * as Throttle from 'promise-parallel-throttle';
 import WebSocketConnection from '../webSocketConnection';
+import WebSocketConnectionMiddleware from '../webSocketConnectionMiddleware';
 import { randomBytes } from 'crypto';
 import { WebSocketAction } from '../index';
 import { Debugger } from 'debug';
@@ -83,6 +84,8 @@ export default class WebSocketServer extends Server {
     async start(): Promise<void> {
         const config = getInstance(WebSocketServerConfig)?.value;
         const actions = getInstancesOfType(WebSocketAction);
+        const connectionMiddlewares: Set<ConnectionMiddleware> = new Set([...this.getConnectionMiddlewares()]
+            .filter((instance) => instance instanceof WebSocketConnectionMiddleware));
         this.runtime = new WsServer({
             ...config,
             verifyClient: async ({ origin, req, secure }, cb) => {
@@ -111,9 +114,6 @@ export default class WebSocketServer extends Server {
                 );
 
                 try {
-                    const connectionMiddlewares: Set<ConnectionMiddleware> = this.getMiddlewaresOfType(
-                        ConnectionMiddleware
-                    ) as Set<ConnectionMiddleware>;
                     await Throttle.all(
                         [...connectionMiddlewares].map(
                             (connectionMiddleware) => async () => {
@@ -140,9 +140,6 @@ export default class WebSocketServer extends Server {
             ) as WebSocketConnection;
             conn.ws = ws;
             logger.debug(`'${conn.id}' has connected.`);
-            const connectionMiddlewares: Set<ConnectionMiddleware> = this.getMiddlewaresOfType(
-                ConnectionMiddleware
-            ) as Set<ConnectionMiddleware>;
             await Throttle.all(
                 [...connectionMiddlewares].map(
                     (connectionMiddleware) => async () => {
@@ -307,15 +304,31 @@ export default class WebSocketServer extends Server {
     }
 
     async stop(): Promise<void> {
+        const connectionMiddlewares: Set<ConnectionMiddleware> = new Set([...this.getConnectionMiddlewares()]
+            .filter((instance) => instance instanceof WebSocketConnectionMiddleware));
         await Throttle.all(
             ([...this.connections] as WebSocketConnection[]).map(
                 (conn) => async () => {
+                    await Throttle.all(
+                        [...connectionMiddlewares].map(
+                            (connectionMiddleware) => async () => {
+                                await connectionMiddleware.beforeDestroy(conn, this);
+                            }
+                        )
+                    );
                     conn.ws?.close(1012, 'Server closed.');
                     this.debug(`Send close event to '${conn.id}'.`);
                     logger.info(`Send close event to '${conn.id}'.`);
                     await this.removeConnection(conn);
                     this.debug(`Closed connection '${conn.id}'.`);
                     logger.info(`Closed connection '${conn.id}'.`);
+                    await Throttle.all(
+                        [...connectionMiddlewares].map(
+                            (connectionMiddleware) => async () => {
+                                await connectionMiddleware.afterDestroy(conn, this);
+                            }
+                        )
+                    );
                 }
             )
         );

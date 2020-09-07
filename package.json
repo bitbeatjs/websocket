@@ -22,7 +22,7 @@
     "prepare": "npm run build"
   },
   "dependencies": {
-    "@bitbeat/core": "^0.0.10",
+    "@bitbeat/core": "^0.0.12",
     "debug": "^4.1.1",
     "promise-parallel-throttle": "^3.3.0",
     "ws": "^7.3.1"
