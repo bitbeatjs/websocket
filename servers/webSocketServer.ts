@@ -129,8 +129,15 @@ export default class WebSocketServer extends Server {
                     );
                     this.addConnection(conn);
                     this.debug(`Verified client with id '${conn.id}'.`);
+                    logger.debug(
+                        `Verified client with id '${conn.id}'.`
+                    );
                     cb(true);
                 } catch (e) {
+                    this.debug(`Rejected client '${conn.id}' with error '${e.toString()}'.`);
+                    logger.debug(
+                        `Rejected client '${conn.id}' with error '${e.toString()}'.`
+                    );
                     await conn.close();
                     cb(false, 4000, e.toString());
                 }
@@ -329,8 +336,6 @@ export default class WebSocketServer extends Server {
                     this.debug(`Send close event to '${conn.id}'.`);
                     logger.info(`Send close event to '${conn.id}'.`);
                     await this.removeConnection(conn);
-                    this.debug(`Closed connection '${conn.id}'.`);
-                    logger.info(`Closed connection '${conn.id}'.`);
                     await Throttle.all(
                         [...connectionMiddlewares].map(
                             (connectionMiddleware) => async () => {
@@ -341,6 +346,8 @@ export default class WebSocketServer extends Server {
                             maxInProgress: 1,
                         }
                     );
+                    this.debug(`Closed connection '${conn.id}'.`);
+                    logger.info(`Closed connection '${conn.id}'.`);
                 }
             )
         );
