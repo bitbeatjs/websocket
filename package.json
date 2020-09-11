@@ -4,6 +4,7 @@
   "license": "MIT",
   "description": "The web socket server module for bitbeat.",
   "main": "index.js",
+  "keywords": ["bitbeat", "framework", "modular", "backend", "minimal", "websocket", "websockets", "ws", "real-time", "server"],
   "private": false,
   "typings": "./index.d.ts",
   "repository": "bitbeatjs/websocket",
