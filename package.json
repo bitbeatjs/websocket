@@ -12,7 +12,7 @@
   },
   "homepage": "https://github.com/bitbeatjs/websocket",
   "scripts": {
-    "start": "node ./node_modules/@bitbeat/core/bin start",
+    "start": "npx @bitbeat/core start",
     "build": "npx gulp default",
     "watch": "npx gulp watch",
     "lint": "eslint .",
