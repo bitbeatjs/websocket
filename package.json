@@ -30,7 +30,6 @@
         "lint": "eslint .",
         "analyse:dependencies": "npx bundle-phobia -p package.json",
         "analyse:licenses": "yarn licenses list",
-        "test": "echo \"Error: no test specified\" && exit 1",
         "prepare": "npm run build"
     },
     "dependencies": {
