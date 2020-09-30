@@ -1,20 +1,23 @@
 {
-  "extends": "./node_modules/@bitbeat/core/tsconfig.json",
-  "compilerOptions": {
-    "downlevelIteration": true
-  },
-  "files": [
-    "index.ts",
-    "webSocketActionMiddleware.ts",
-    "webSocketAction.ts",
-    "webSocketConnection.ts",
-    "webSocketConnectionMiddleware.ts"
-  ],
-  "include": [
-    "config",
-    "servers"
-  ],
-  "exclude": [
-    "./node_modules"
-  ]
+    "compilerOptions": {
+        "rootDir": ".",
+        "baseUrl": ".",
+        "outDir": ".",
+        "declaration": true,
+        "allowJs": true,
+        "module": "esnext",
+        "target": "es6",
+        "lib": ["es2017"],
+        "moduleResolution": "node",
+        "experimentalDecorators": true,
+        "esModuleInterop": true,
+        "isolatedModules": true,
+        "strict": true,
+        "types": ["node"],
+        "downlevelIteration": true,
+        "resolveJsonModule": true
+    },
+    "files": ["index.ts"],
+    "include": ["config", "connectors"],
+    "exclude": ["./node_modules"]
 }
