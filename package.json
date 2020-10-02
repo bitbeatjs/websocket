@@ -25,8 +25,8 @@
     "homepage": "https://github.com/bitbeatjs/websocket",
     "scripts": {
         "start": "npx @bitbeat/core start",
-        "build": "npx rollup -c rollup.config.js",
-        "watch": "npx rollup -c rollup.config.js --watch",
+        "build": "npx gulp",
+        "watch": "npx gulp watch",
         "lint": "eslint .",
         "analyse:dependencies": "npx bundle-phobia -p package.json",
         "analyse:licenses": "yarn licenses list",
@@ -37,13 +37,10 @@
         "ws": "^7.3.1"
     },
     "peerDependencies": {
-        "@bitbeat/core": "^0.0.18"
+        "@bitbeat/core": "^0.0.19"
     },
     "devDependencies": {
-        "@bitbeat/core": "^0.0.18",
-        "@rollup/plugin-json": "^4.1.0",
-        "@rollup/plugin-node-resolve": "^9.0.0",
-        "@rollup/plugin-sucrase": "^3.1.0",
+        "@bitbeat/core": "^0.0.19",
         "@types/debug": "^4.1.5",
         "@types/node": "^14.11.2",
         "@types/node-cron": "^2.0.3",
@@ -54,13 +51,16 @@
         "bundle-phobia-cli": "^0.14.9",
         "eslint": "^7.10.0",
         "eslint-config-prettier": "^6.12.0",
+        "gulp": "^4.0.2",
+        "gulp-changed-in-place": "^2.3.0",
+        "gulp-clean": "^0.4.0",
+        "gulp-eslint": "^6.0.0",
+        "gulp-terser": "^1.4.0",
+        "gulp-typescript": "^6.0.0-alpha.1",
         "husky": "^4.3.0",
         "lint-staged": "^10.4.0",
+        "merge-stream": "^2.0.0",
         "prettier": "^2.1.2",
-        "rollup": "^2.28.2",
-        "rollup-plugin-analyzer": "^3.3.0",
-        "rollup-plugin-preserve-shebangs": "^0.2.0",
-        "rollup-plugin-terser": "^7.0.2",
         "typescript": "^4.0.3"
     },
     "husky": {

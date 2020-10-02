@@ -6,8 +6,9 @@ import {
     ConnectionMiddleware,
     Result,
     RunParameters,
-    boot,
     store,
+    generateDebugger,
+    boot,
 } from '@bitbeat/core';
 import { ServerOptions, Server as WsServer, AddressInfo } from 'ws';
 import WebSocketServerConfig from '../config/webSocketServerConfig';
@@ -39,7 +40,7 @@ export default class WebSocketServer extends Server {
     }
 
     async configure(): Promise<void> {
-        this.debug = boot.generateDebugger(this.name);
+        this.debug = generateDebugger(this.name);
     }
 
     public generateNonce(): string {
