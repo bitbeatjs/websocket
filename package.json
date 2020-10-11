@@ -1,6 +1,6 @@
 {
     "name": "@bitbeat/websocket",
-    "version": "0.0.13",
+    "version": "0.0.14",
     "license": "MIT",
     "description": "The web socket server module for bitbeat.",
     "main": "index.js",
