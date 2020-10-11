@@ -13,3 +13,4 @@ bin/zip.sh
 gulpfile.js
 .eslintignore
 Dockerfile
+public
